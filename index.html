@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pelusas — push-your-luck dust bunnies</title>
+<meta name="description" content="Play Pelusas (HIT! / No Mercy) online with a friend. Peer-to-peer, no accounts, no server.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sniglet:wght@400;800&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='55' r='38' fill='%23e4573d'/><circle cx='38' cy='48' r='10' fill='white'/><circle cx='62' cy='48' r='10' fill='white'/><circle cx='40' cy='50' r='4'/><circle cx='64' cy='50' r='4'/></svg>">
+</head>
+<body>
+
+<!-- shared SVG defs: the fuzz filter every lint ball uses -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="fuzz" x="-60%" y="-60%" width="220%" height="220%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="16"/>
+    </filter>
+    <filter id="fuzz-soft" x="-60%" y="-60%" width="220%" height="220%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="2" seed="3" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="10"/>
+    </filter>
+  </defs>
+</svg>
+
+<header id="masthead">
+  <h1><span class="title-word">Pelusas<span class="title-fuzz" aria-hidden="true"></span></span></h1>
+  <p class="tagline">flip &middot; steal &middot; stop before you poof</p>
+</header>
+
+<main>
+
+<section id="screen-home" class="screen">
+  <div class="panel">
+    <label for="name-input">Your name</label>
+    <input id="name-input" maxlength="16" autocomplete="nickname" placeholder="e.g. Matt">
+    <div id="home-host-ui">
+      <button id="btn-host" class="btn btn-big btn-go">Start a room</button>
+      <p class="hint">You’ll get a link to send your friend. 2–6 players.</p>
+    </div>
+    <div id="home-join-ui" hidden>
+      <p id="join-blurb">You’ve been invited to a game!</p>
+      <button id="btn-join" class="btn btn-big btn-go">Join the room</button>
+    </div>
+    <p id="home-status" class="status" role="status"></p>
+  </div>
+
+  <details class="rules">
+    <summary>How to play</summary>
+    <ul>
+      <li>On your turn, <strong>flip</strong> cards from the deck one at a time. They pile up in front of you.</li>
+      <li>When you flip a number that’s face-up in front of <em>another player</em>, you may <strong>steal</strong> every copy of it from everyone.</li>
+      <li><strong>Stop</strong> whenever you like — but your cards stay face-up (and stealable!) until your next turn, when they bank safely.</li>
+      <li>Flip a number you already have face-up while holding <strong>3+ cards</strong> and you go <strong>POOF</strong> — everything in front of you is swept out of the game.</li>
+      <li>Deck runs out → everyone banks. Highest total wins. Deck: eleven each of 1–5, seven each of 6–10.</li>
+    </ul>
+  </details>
+</section>
+
+<section id="screen-lobby" class="screen" hidden>
+  <div class="panel">
+    <h2>Room open</h2>
+    <div id="invite-row" class="invite-row">
+      <input id="invite-link" readonly aria-label="Invite link">
+      <button id="btn-copy" class="btn">Copy link</button>
+    </div>
+    <p class="hint">Send this link to your friend — they open it, type a name, and appear below.</p>
+    <ul id="lobby-players" class="lobby-players"></ul>
+    <button id="btn-start" class="btn btn-big btn-go" disabled>Start game</button>
+    <p id="lobby-status" class="status" role="status"></p>
+  </div>
+</section>
+
+<section id="screen-game" class="screen" hidden>
+  <div id="opponents"></div>
+
+  <div id="table-center">
+    <div id="deck-area">
+      <div id="deck-stack" aria-label="Draw pile"><span id="deck-count"></span></div>
+      <div class="pile-label">deck</div>
+    </div>
+    <div id="stage"><!-- last flipped card animates here --></div>
+    <div id="removed-area">
+      <div id="removed-pile"><span id="removed-count"></span></div>
+      <div class="pile-label">poofed</div>
+    </div>
+  </div>
+
+  <div id="actions" aria-live="polite"></div>
+
+  <div id="you-area">
+    <div class="player-head">
+      <span id="you-name" class="player-name"></span>
+      <span id="you-banked" class="banked-chip"></span>
+    </div>
+    <div id="you-tableau" class="tableau"></div>
+  </div>
+
+  <ol id="log" aria-label="Game log"></ol>
+</section>
+
+</main>
+
+<div id="overlay" hidden>
+  <div class="panel" id="overlay-panel"></div>
+</div>
+
+<div id="toast" role="status" hidden></div>
+
+<footer>
+  Unofficial fan implementation of <em>Pelusas</em> / <em>HIT!</em> / <em>No&nbsp;Mercy</em>,
+  a card game by Reiner Knizia (published by Mercurio&nbsp;/ Ravensburger) — go buy the real deck!
+  Original artwork, no accounts, no tracking; cards travel peer-to-peer.
+</footer>
+
+<script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
+<script type="module" src="ui.js"></script>
+</body>
+</html>
